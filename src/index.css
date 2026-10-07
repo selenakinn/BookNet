@@ -158,12 +158,21 @@ input {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
-  transition: 0.3s;
   box-shadow: var(--shadow);
+
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .book-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow:
+    0 15px 35px rgba(192, 132, 252, 0.25),
+    0 0 20px rgba(192, 132, 252, 0.15);
 }
 
 .book-card img {
@@ -171,6 +180,12 @@ input {
   height: 220px;
   object-fit: cover;
   border-radius: 8px;
+
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover img {
+  transform: scale(1.05);
 }
 
 .book-card h3 {
@@ -180,4 +195,62 @@ input {
 
 .book-card p {
   margin: 10px 0;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px 40px;
+
+  background-color: #151521;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  color: #c084fc;
+  font-size: 1.7rem;
+  font-weight: bold;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-bar input {
+  min-width: 280px;
+  margin: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-links a.active {
+  color: #c084fc;
+  border-bottom: 2px solid #c084fc;
+  padding-bottom: 4px;
+}
+.favorite-btn {
+  background: #c084fc;
+  transition: all 0.3s ease;
+}
+
+.favorite-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(192, 132, 252, 0.35);
 }

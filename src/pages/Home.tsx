@@ -1,58 +1,73 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { searchBooks } from "../services/bookService";
+import { toast } from "react-toastify";
 
 function Home() {
   const [books, setBooks] = useState<any[]>([]);
-  const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const [notFound, setNotFound] = useState(false);
 
-  const getBooks = async (query = search) => {
-    if (!query.trim()) {
-      alert("Lütfen bir kitap adı girin.");
-      return;
-    }
+  const searchQuery = searchParams.get("search");
 
+  const getBooks = async (query: string) => {
     const data = await searchBooks(query);
-    setBooks(data.docs.slice(0, 10));
+
+    if (data.docs.length === 0) {
+      setNotFound(true);
+      setBooks([]);
+    } else {
+      setNotFound(false);
+      setBooks(data.docs.slice(0, 10));
+    }
   };
 
   useEffect(() => {
-    getBooks("bestseller");
-  }, []);
+    if (searchQuery) {
+      getBooks(searchQuery);
+    } else {
+      getBooks("bestseller");
+    }
+  }, [searchQuery]);
 
   const addToFavorites = (book: any) => {
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 
     const alreadyExists = favorites.find((fav: any) => fav.key === book.key);
 
-    if (!alreadyExists) {
-      favorites.push(book);
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-      alert("Kitap favorilere eklendi!");
-    } else {
-      alert("Bu kitap zaten favorilerde!");
+    if (alreadyExists) {
+      toast.info("📚 Bu kitap zaten favorilerinde!");
+      return;
     }
+
+    favorites.push({
+      key: book.key,
+      title: book.title,
+      author_name: book.author_name,
+      cover_edition_key: book.cover_edition_key,
+      cover_i: book.cover_i,
+    });
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+
+    toast.success("❤️ Kitap favorilere eklendi!");
   };
 
   return (
     <div>
-      <h1>📚 Popüler Kitaplar</h1>
+      {!searchQuery && (
+        <>
+          <h1>Popüler Kitaplar</h1>
 
-      <p>
-        Binlerce kitap arasında arama yapabilir, favorilerine ekleyebilir ve
-        detaylarını inceleyebilirsin.
-      </p>
+          <p>Keşfet • Oku • Favorilerine Ekle</p>
 
-      <br />
+          <br />
+        </>
+      )}
 
-      <input
-        type="text"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Kitap ara..."
-      />
+      {searchQuery && !notFound && <h2>"{searchQuery}" için sonuçlar</h2>}
 
-      <button onClick={() => getBooks()}>Ara</button>
+      {notFound && <h2>"{searchQuery}" için sonuç bulunamadı</h2>}
 
       <div className="book-grid">
         {books.map((book, index) => (
@@ -60,7 +75,10 @@ function Home() {
             <Link
               to={`/books/${book.key.split("/").pop()}`}
               state={{ coverId: book.cover_i }}
-              style={{ textDecoration: "none", color: "inherit" }}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+              }}
             >
               {book.cover_edition_key && (
                 <img

@@ -254,3 +254,34 @@ input {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(192, 132, 252, 0.35);
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+}
+@media (max-width: 500px) {
+  .search-bar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .search-bar input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .search-bar button {
+    width: 100%;
+  }
+}

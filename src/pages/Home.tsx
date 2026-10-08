@@ -58,9 +58,7 @@ function Home() {
       {!searchQuery && (
         <>
           <h1>Popüler Kitaplar</h1>
-
           <p>Keşfet • Oku • Favorilerine Ekle</p>
-
           <br />
         </>
       )}
@@ -70,8 +68,8 @@ function Home() {
       {notFound && <h2>"{searchQuery}" için sonuç bulunamadı</h2>}
 
       <div className="book-grid">
-        {books.map((book, index) => (
-          <div key={index} className="book-card">
+        {books.map((book) => (
+          <div key={book.key} className="book-card">
             <Link
               to={`/books/${book.key.split("/").pop()}`}
               state={{ coverId: book.cover_i }}
@@ -80,11 +78,13 @@ function Home() {
                 color: "inherit",
               }}
             >
-              {book.cover_edition_key && (
+              {book.cover_edition_key ? (
                 <img
                   src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`}
                   alt={book.title}
                 />
+              ) : (
+                <div className="no-cover">Kapak Yok</div>
               )}
 
               <h3>{book.title}</h3>
